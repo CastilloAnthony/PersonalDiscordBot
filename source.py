@@ -1,7 +1,8 @@
 ﻿import discord
-
 from discord.ext import commands
 
+
+discordPublicId = "9198975fb26be78918e25d31e4efdbf1e6f7d4defc83a9d2de191fbe92bd4f52"
 bot = commands.Bot(command_prefix='>')
 
 @bot.command()
