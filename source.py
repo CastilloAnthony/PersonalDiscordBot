@@ -1,4 +1,14 @@
-import discord
+﻿import discord
+
+from discord.ext import commands
+
+bot = commands.Bot(command_prefix='>')
+
+@bot.command()
+async def ping(ctx):
+    await ctx.send('pong')
+
+bot.run('token')
 
 class MyClient(discord.Client):
     async def on_ready(self):
