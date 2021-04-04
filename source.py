@@ -10,11 +10,15 @@ discordKeys = {
     }
 
 client = commands.Bot(command_prefix='!')
-
+currentGuild = discord.Guild()
 client = discord.Client()
 
 def getDiscordUsers():
-    usersList = client.users
+    guildSize = len(client.users)
+    usersList = {}
+    print(guildSize)
+    for i in client.users:
+        usersList[client.users] = client.users[i]
     f = open("users.json", "w")
     f.write(json.dumps(usersList, sort_keys=True))
     f.close()
@@ -22,6 +26,7 @@ def getDiscordUsers():
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
+    getDiscordUsers()
 
 @client.event
 async def on_message(ctx):
@@ -32,10 +37,9 @@ async def on_message(ctx):
         if ctx.content.find("hello") != -1:
             await ctx.channel.send('Hello!')
         elif ctx.content.find("knight") != -1:
-            tempString = "I Knight you young "
-            tempString = tempString.join(ctx.author)
-            tempString = tempString + ". Now rise as a new Jedi Knight! You will act as a shield guarding innocents against those who would wish to cause harm."
-            await ctx.channel.send(tempString)
+            #set their role to Jedi Knight
+            knightString = "I Knight you young " + str(ctx.author) + ". Now arise as a new Jedi Knight! You will act as a shield guarding innocents against those who would wish to cause harm."
+            await ctx.channel.send(knightString)
 
 @client.event
 async def on_command_error(ctx, error):
