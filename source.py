@@ -3,23 +3,24 @@ import json
 import random
 import os
 
+from os import path
 from discord.ext import commands
 
-Keys = { 
-    "clientID" : "825455539399557181",
-    "publicKey" : "9198975fb26be78918e25d31e4efdbf1e6f7d4defc83a9d2de191fbe92bd4f52",
-    "botToken" : "ODI1NDU1NTM5Mzk5NTU3MTgx.YF-LYA.dfYIofb-fVLbcBMUb22CE3EU_LM",
-    "redirect-URL" : "https://www.swtor.com/"
-    }
+Keys = {}
+usersData = {}
 
 client = commands.Bot(command_prefix='!')
-#currentGuild = discord.Guild()
-#client = discord.Client()
+currentGuild = discord.Guild
 
-def readFileJSON():
-    if ("discordKeys.json"):
-        file = open("discordKeys.json", "r")
-
+def readFileJSON(filePath, returnObject):
+    returnObject.clear()
+    if exists(filePath):
+        file = open(filePath, "r")
+        returnObject = json.load(filePath)
+        file.close()
+    else:
+        print(filePath, " does not exist.")
+"""
 def getDiscordUsers():
     guildSize = len(client.users)
     usersList = {}
@@ -29,11 +30,12 @@ def getDiscordUsers():
     f = open("users.json", "w")
     f.write(json.dumps(usersList, sort_keys=True))
     f.close()
-
+"""
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
-    #getDiscordUsers()
+    readFileJson("users.json", usersData)
+    print(str(currentGuild))
 
 @client.event
 async def on_message(ctx):
@@ -60,7 +62,7 @@ async def hello(ctx):
 #COMMAND: knight, will respond with a phrase and knight the user
 @client.command()
 async def knight(ctx):
-    knightString = "By the power granted to me it is the will of the Force, that I Knight you young " + str(ctx.author) + ". Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
+    knightString = "By the will of the Force and the power granted to me, I Knight you young " + str(ctx.author) + " as a Jedi Knight! Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
     await ctx.send(knightString)
 
 #COMMAND: happy, will respond with the slight_smile emoji
@@ -107,4 +109,11 @@ async def boomerang(ctx, *, arg):
         await ctx.send(arg)
     return
 
-client.run(discordKeys["botToken"])
+if path.exists("discordKeys.json"):
+    with open("discordKeys.json", "r") as file:
+        Keys = json.load(file)
+        print(Keys)
+        file.close()
+        client.run(discord.Keys["botToken"])
+else:
+    print("No discord keys were detected.")
