@@ -12,14 +12,7 @@ usersData = {}
 client = commands.Bot(command_prefix='!')
 currentGuild = discord.Guild
 
-def readFileJSON(filePath, returnObject):
-    returnObject.clear()
-    if exists(filePath):
-        file = open(filePath, "r")
-        returnObject = json.load(filePath)
-        file.close()
-    else:
-        print(filePath, " does not exist.")
+
 """
 def getDiscordUsers():
     guildSize = len(client.users)
@@ -59,9 +52,22 @@ async def hello(ctx):
     await ctx.send("world")
     return
 
+#COMMAND: collect data
+@client.command()
+async def collect():
+    if exists("users.json"):
+        file = open("users.json", "r")
+        returnObject = json.load(file)
+        file.close()
+    else:
+        print(filePath, " does not exist.")
+
+    #collect server data
+
 #COMMAND: knight, will respond with a phrase and knight the user
 @client.command()
 async def knight(ctx):
+    #set role to Jedi Knight
     knightString = "By the will of the Force and the power granted to me, I Knight you young " + str(ctx.author) + " as a Jedi Knight! Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
     await ctx.send(knightString)
 
@@ -114,6 +120,6 @@ if path.exists("discordKeys.json"):
         Keys = json.load(file)
         print(Keys)
         file.close()
-        client.run(discord.Keys["botToken"])
+        client.run(Keys["personalAssitant"]["botToken"])
 else:
     print("No discord keys were detected.")
