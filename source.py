@@ -27,8 +27,8 @@ def getDiscordUsers():
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
-    readFileJson("users.json", usersData)
-    print(str(currentGuild))
+    #readFileJson("users.json", usersData)
+    #print(str(currentGuild))
 
 @client.event
 async def on_message(ctx):
@@ -54,7 +54,7 @@ async def hello(ctx):
 
 #COMMAND: collect data
 @client.command()
-async def collect():
+async def scan():
     if exists("users.json"):
         file = open("users.json", "r")
         returnObject = json.load(file)
@@ -115,11 +115,22 @@ async def boomerang(ctx, *, arg):
         await ctx.send(arg)
     return
 
+if path.exists("users.json"):
+    with open("users.json", "r") as file:
+        if file != '':
+            usersData = json.load(file)
+            file.close()
+            print("Loaded users.json.")
+        else:
+            print("No user data detected.")
+else:
+    print("No user data detected.")
+
 if path.exists("discordKeys.json"):
     with open("discordKeys.json", "r") as file:
         Keys = json.load(file)
-        print(Keys)
         file.close()
         client.run(Keys["personalAssitant"]["botToken"])
 else:
     print("No discord keys were detected.")
+        
