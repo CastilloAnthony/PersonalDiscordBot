@@ -96,8 +96,9 @@ async def knight(ctx):
 async def customTest(ctx):
     #Check for a preexisting user database
     if path.exists("users.json"):
-        with open("users.json", "r") as file:
-            usersData = json.load(file)    
+        with open("users.json", "r") as usersDataFile:
+            print(usersDataFile.read())
+            usersData = json.loads(usersDataFile.read())    
         print("Users List:\n")
         for i, k in usersData:
             print(i, k, "\n")
@@ -127,9 +128,9 @@ async def customTest(ctx):
 
 def initialize():
     if path.exists("discordKeys.json"):
-        with open("discordKeys.json", "r") as file:
-            Keys = json.load(file)
-            file.close()
+        with open("discordKeys.json", "r") as discordFile:
+            Keys = json.load(discordFile)
+            discordFile.close()
             print("Attempting to connect using the token: " + Keys["personalAssitant"]["botToken"])
             client.run(Keys["personalAssitant"]["botToken"])
     else:
