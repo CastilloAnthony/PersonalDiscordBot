@@ -12,24 +12,12 @@ usersData = {}
 client = commands.Bot(command_prefix='!')
 currentGuild = discord.Guild
 
-
-"""
-def getDiscordUsers():
-    guildSize = len(client.users)
-    usersList = {}
-    print(guildSize)
-    for i in client.users:
-        usersList[client.users] = client.users[i]
-    f = open("users.json", "w")
-    f.write(json.dumps(usersList, sort_keys=True))
-    f.close()
-"""
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     #readFileJson("users.json", usersData)
     #print(str(currentGuild))
-
+"""
 @client.event
 async def on_message(ctx):
     if ctx.author == client.user:
@@ -39,8 +27,8 @@ async def on_message(ctx):
         if ctx.content.find("hello") != -1:
             await ctx.channel.send('Hello!')
     await client.process_commands(ctx)
-
-@client.event
+"""
+@client.command()
 async def on_command_error(ctx, error):
 	if isinstance(error, commands.CommmandNotFound):
 		await ctx.send('Invalid command')
@@ -51,25 +39,6 @@ async def hello(ctx):
     """Send text message 'world'"""
     await ctx.send("world")
     return
-
-#COMMAND: collect data
-@client.command()
-async def scan():
-    if exists("users.json"):
-        file = open("users.json", "r")
-        returnObject = json.load(file)
-        file.close()
-    else:
-        print(filePath, " does not exist.")
-
-    #collect server data
-
-#COMMAND: knight, will respond with a phrase and knight the user
-@client.command()
-async def knight(ctx):
-    #set role to Jedi Knight
-    knightString = "By the will of the Force and the power granted to me, I Knight you young " + str(ctx.author) + " as a Jedi Knight! Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
-    await ctx.send(knightString)
 
 #COMMAND: happy, will respond with the slight_smile emoji
 @client.command()
@@ -115,15 +84,46 @@ async def boomerang(ctx, *, arg):
         await ctx.send(arg)
     return
 
+#COMMAND: knight, will respond with a phrase and knight the user
 @client.command()
-async def scanNew(ctx):
+async def knight(ctx):
+    #set role to Jedi Knight
+    knightString = "By the will of the Force and the power granted to me, I Knight you young " + str(ctx.author) + " as a Jedi Knight! Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
+    await ctx.send(knightString)
+
+#COMMAND: collect data on detectable users.
+@client.command()
+async def customTest(ctx):
+    #Check for a preexisting user database
     if path.exists("users.json"):
         with open("users.json", "r") as file:
             usersData = json.load(file)
             file.close()
-            print("Loaded users.json.")
+            print("Users List:\n" + json.dump(usersData))
     else:
         print("No user data detected.")
+
+    #Check each scanned member against the pre-existing database
+    for i in client.get_all_members():
+        k
+        for k in usersData:
+            if i == k:
+                break
+        if (k != None) or (k == i):
+            continue
+        else:
+            usersData.append(i)
+
+    #Write all of the data into the database
+    with open("users.json", "w") as file:
+        file.write(json.dump(usersData))
+        file.close()
+        print("User list updated to:\n" + json.dump(usersData) + "\n")
+
+    #Confirm task completeion
+    await ctx.send("Test Complete!")
+    print("Test Complete!")
+    return
 
 def initialize():
     if path.exists("discordKeys.json"):
