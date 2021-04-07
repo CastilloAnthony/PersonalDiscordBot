@@ -97,7 +97,7 @@ async def customTest(ctx):
     #Check for a preexisting user database
     if path.exists("users.json"):
         with open("users.json", "r") as usersDataFile:
-            print(usersDataFile.read())
+            #print(usersDataFile.read())
             usersData = json.loads(usersDataFile.read())    
         print("Users List:\n")
         for i, k in usersData:
