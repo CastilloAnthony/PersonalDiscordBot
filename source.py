@@ -97,9 +97,10 @@ async def customTest(ctx):
     #Check for a preexisting user database
     if path.exists("users.json"):
         with open("users.json", "r") as file:
-            usersData = json.load(file)
-            file.close()
-            print("Users List:\n" + json.dump(usersData))
+            usersData = json.load(file)    
+        print("Users List:\n")
+        for i, k in usersData:
+            print(i, k, "\n")
     else:
         print("No user data detected.")
 
@@ -116,8 +117,7 @@ async def customTest(ctx):
 
     #Write all of the data into the database
     with open("users.json", "w") as file:
-        file.write(json.dump(usersData))
-        file.close()
+        json.dump(usersData, file)
         print("User list updated to:\n" + json.dump(usersData) + "\n")
 
     #Confirm task completeion
