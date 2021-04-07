@@ -100,26 +100,32 @@ async def customTest(ctx):
             #print(usersDataFile.read())
             usersData = json.loads(usersDataFile.read())    
         print("Users List:\n")
-        for i, k in usersData:
-            print(i, k, "\n")
+        for i in usersData:
+            print(i, "\n")
     else:
         print("No user data detected.")
 
     #Check each scanned member against the pre-existing database
-    for i in client.get_all_members():
-        k
+    for member in client.get_all_members():
+        detected = False
+        print(member.name, member.id)
         for k in usersData:
+            print(member.name, member.id)
             if i == k:
+                detected = True
                 break
-        if (k != None) or (k == i):
+        if (detected == True):
             continue
         else:
             usersData.append(i)
+  
+    print("User list updated to:\n")
+    for member in usersData:
+        print(member.name, member.id)
 
     #Write all of the data into the database
-    with open("users.json", "w") as file:
-        json.dump(usersData, file)
-        print("User list updated to:\n" + json.dump(usersData) + "\n")
+    with open("users.json", "w") as usersDataFile:
+        json.dump(usersData, usersDataFile)
 
     #Confirm task completeion
     await ctx.send("Test Complete!")
