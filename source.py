@@ -115,22 +115,24 @@ async def boomerang(ctx, *, arg):
         await ctx.send(arg)
     return
 
-if path.exists("users.json"):
-    with open("users.json", "r") as file:
-        if file != '':
+@client.command()
+async def scanNew(ctx):
+    if path.exists("users.json"):
+        with open("users.json", "r") as file:
             usersData = json.load(file)
             file.close()
             print("Loaded users.json.")
-        else:
-            print("No user data detected.")
-else:
-    print("No user data detected.")
+    else:
+        print("No user data detected.")
 
-if path.exists("discordKeys.json"):
-    with open("discordKeys.json", "r") as file:
-        Keys = json.load(file)
-        file.close()
-        client.run(Keys["personalAssitant"]["botToken"])
-else:
-    print("No discord keys were detected.")
-        
+def initialize():
+    if path.exists("discordKeys.json"):
+        with open("discordKeys.json", "r") as file:
+            Keys = json.load(file)
+            file.close()
+            print("Attempting to connect using the token: " + Keys["personalAssitant"]["botToken"])
+            client.run(Keys["personalAssitant"]["botToken"])
+    else:
+        print("No discord keys were detected.")
+
+initialize()
