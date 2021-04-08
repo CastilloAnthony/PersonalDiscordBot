@@ -84,8 +84,8 @@ async def dice(ctx, arg):
 
 #COMMAND: knight, will respond with a phrase and knight the user
 @client.command()
-async def knight(ctx):
-    #set role to Jedi Knight
+async def knight(ctx, arg):
+    #set the user's role to Jedi Knight
     knightString = "By the will of the Force and the power granted to me, I Knight you young " + str(ctx.author) + " as a Jedi Knight! Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
     await ctx.send(knightString)
 
@@ -93,7 +93,8 @@ async def knight(ctx):
 @client.command()
 async def scanForNew(ctx):
     usersData = {}
-
+    newUsers = 0
+    print("Scannning for new users.")
     #Check for a pre-existing user database
     if path.exists("users.json"):
         with open("users.json") as usersDataFile:
@@ -113,6 +114,7 @@ async def scanForNew(ctx):
                 print("Comparing: " + str(user.id) + " to " + str(usersData[member]["id"]))
                 if user.id == usersData[member]["id"]:
                     detected = True
+                    print("The user " + user.name + "#" + user.discriminator + " is already registered.")
                     break
             if (detected == True):
                 continue
@@ -129,6 +131,7 @@ async def scanForNew(ctx):
                 "mention" : user.mention,
                 "avatar" : user.avatar
                 }
+                newUsers = newUsers + 1
                 print("Added " + tempString + " to the list.")
         else:
             tempString = user.name + "#" + user.discriminator
@@ -144,14 +147,20 @@ async def scanForNew(ctx):
             "avatar" : user.avatar
             }
             print("Added " + tempString + " to the list.")
-
-    print("\nUser list updated to:")
-    for member in usersData:
-        print(str(member) + " with user id " + str(usersData[member]["id"]))
+            newUsers = newUsers + 1
 
     #Write all of the data into the database
     with open("users.json", "w") as usersDataFile:
         json.dump(usersData, usersDataFile, indent=0, sort_keys=True)
+
+    #Print out the results
+    if newUsers == 0:
+        print("No new users were added to the list.")
+    else:
+        print("\nUser list updated to:")
+        for member in usersData:
+            print(str(member) + " with user id " + str(usersData[member]["id"]))
+        print("With " + str(newUsers) + " new users registered.")
 
     #Confirm task completeion
     await ctx.send("Scan Complete!")
