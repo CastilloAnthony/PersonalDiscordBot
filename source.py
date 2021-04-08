@@ -107,7 +107,7 @@ for guild in client.guilds:
 async def customTest(ctx):
     usersData = {}
 
-    #Check for a preexisting user database
+    #Check for a pre-existing user database
     if path.exists("users.json"):
         with open("users.json") as usersDataFile:
             usersData = json.load(usersDataFile)
@@ -164,7 +164,7 @@ async def customTest(ctx):
 
     #Write all of the data into the database
     with open("users.json", "w") as usersDataFile:
-        json.dump(usersData, usersDataFile)
+        json.dump(usersData, usersDataFile, indent=0, sort_keys=True)
 
     #Confirm task completeion
     await ctx.send("Test Complete!")
