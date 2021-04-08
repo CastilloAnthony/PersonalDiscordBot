@@ -2,6 +2,7 @@
 import json
 import random
 import os
+import math
 
 from os import path
 from discord.ext import commands
@@ -15,23 +16,20 @@ client = commands.Bot(command_prefix='!', intents=intents)
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
+    print("Current Latency: " + str(round(client.latency, 3)) + " seconds")
     #readFileJson("users.json", usersData)
     #print(str(currentGuild))
-"""
-@client.event
-async def on_message(ctx):
-    if ctx.author == client.user:
-        return
 
-    if ctx.content.startswith('!') == False:
-        if ctx.content.find("hello") != -1:
-            await ctx.channel.send('Hello!')
-    await client.process_commands(ctx)
-"""
 @client.command()
 async def on_command_error(ctx, error):
 	if isinstance(error, commands.CommmandNotFound):
 		await ctx.send('Invalid command')
+
+#COMMAND: ping, will respond with pong and display the current latency
+@client.command()
+async def ping(ctx):
+    await ctx.send("Pong!" + " Current Latency: " + str(round(client.latency, 3)) + " seconds.")
+    return
 
 #COMMAND: hello, will respond with 'world' 
 @client.command()
@@ -45,6 +43,13 @@ async def hello(ctx):
 async def happy(ctx):
     """Send :slight_smile: Emoji"""
     await ctx.send(":slight_smile:")
+    return
+
+#COMMAND: boomerang, will repeat the argument if an argument is sent by the user
+@client.command()
+async def boomerang(ctx, *, arg):
+    if arg:
+        await ctx.send(arg)
     return
 
 #COMMAND: dice, will send value found by random generation
@@ -77,13 +82,6 @@ async def dice(ctx, arg):
     await ctx.send(dice_result)
     return
 
-#COMMAND: boomerang, will repeat the argument if an argument is sent by the user
-@client.command()
-async def boomerang(ctx, *, arg):
-    if arg:
-        await ctx.send(arg)
-    return
-
 #COMMAND: knight, will respond with a phrase and knight the user
 @client.command()
 async def knight(ctx):
@@ -91,20 +89,9 @@ async def knight(ctx):
     knightString = "By the will of the Force and the power granted to me, I Knight you young " + str(ctx.author) + " as a Jedi Knight! Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
     await ctx.send(knightString)
 
-"""
-print(str(client.guilds))
-for guild in client.guilds:
-        currentGuild = client.get_guild(guild.id)
-        print(currentGuild.member_count)
-        for x in range(0, currentGuild.member_count):
-            member = currentGuild.members
-            print(member[x].name, member[x].id)
-
-"""
-
 #COMMAND: collect data on detectable users.
 @client.command()
-async def customTest(ctx):
+async def scanForNew(ctx):
     usersData = {}
 
     #Check for a pre-existing user database
@@ -160,17 +147,18 @@ async def customTest(ctx):
 
     print("\nUser list updated to:")
     for member in usersData:
-        print(str(member) + " = " + str(usersData[member]["name"]) + " " + str(usersData[member]["id"]))
+        print(str(member) + " with user id " + str(usersData[member]["id"]))
 
     #Write all of the data into the database
     with open("users.json", "w") as usersDataFile:
         json.dump(usersData, usersDataFile, indent=0, sort_keys=True)
 
     #Confirm task completeion
-    await ctx.send("Test Complete!")
-    print("Test Complete!")
+    await ctx.send("Scan Complete!")
+    print("Scan Complete!\n")
     return
 
+#This function will initialize our bot
 def initialize():
     if path.exists("discordKeys.json"):
         with open("discordKeys.json", "r") as discordFile:
