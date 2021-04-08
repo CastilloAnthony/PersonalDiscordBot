@@ -7,10 +7,10 @@ from os import path
 from discord.ext import commands
 
 Keys = {}
-usersData = {}
 
-client = commands.Bot(command_prefix='!')
-currentGuild = discord.Guild
+intents = discord.Intents().all()
+client = commands.Bot(command_prefix='!', intents=intents)
+#currentGuild = discord.Guild
 
 @client.event
 async def on_ready():
@@ -91,37 +91,52 @@ async def knight(ctx):
     knightString = "By the will of the Force and the power granted to me, I Knight you young " + str(ctx.author) + " as a Jedi Knight! Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
     await ctx.send(knightString)
 
+"""
+print(str(client.guilds))
+for guild in client.guilds:
+        currentGuild = client.get_guild(guild.id)
+        print(currentGuild.member_count)
+        for x in range(0, currentGuild.member_count):
+            member = currentGuild.members
+            print(member[x].name, member[x].id)
+
+"""
+
 #COMMAND: collect data on detectable users.
 @client.command()
 async def customTest(ctx):
+    usersData = {}
+
     #Check for a preexisting user database
-    if path.exists("users.json"):
-        with open("users.json", "r") as usersDataFile:
-            #print(usersDataFile.read())
-            usersData = json.loads(usersDataFile.read())    
-        print("Users List:\n")
-        for i in usersData:
-            print(i, "\n")
+    print("users.json exists = " + str(path.exists("users.json")))
+    if path.exists('"users.json"'):
+        with open('"users.json"') as usersDataFile:
+            usersData = json.loads(usersDataFile.read())   
+        print("Loaded users list:\n")
+        for member in usersData:
+            print(member)
     else:
         print("No user data detected.")
 
     #Check each scanned member against the pre-existing database
-    for member in client.get_all_members():
-        detected = False
-        print(member.name, member.id)
-        for k in usersData:
-            print(member.name, member.id)
-            if i == k:
-                detected = True
-                break
-        if (detected == True):
-            continue
+    for user in client.users:
+        if usersData != None:
+            detected = False
+            for member in usersData:
+                print("Comparing: " + member.name + " to " + member.name)
+                if member.id == user.id:
+                    detected = True
+                    break
+            if (detected == True):
+                continue
+            else:
+                usersData[user.id] = user
         else:
-            usersData.append(i)
-  
+            usersData[user.id] = user
+            
     print("User list updated to:\n")
     for member in usersData:
-        print(member.name, member.id)
+        print(str(member) + " = " + str(usersData[member].name) + " " + str(usersData[member].id))
 
     #Write all of the data into the database
     with open("users.json", "w") as usersDataFile:
