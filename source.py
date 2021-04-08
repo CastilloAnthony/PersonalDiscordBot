@@ -123,20 +123,56 @@ async def customTest(ctx):
         if usersData != None:
             detected = False
             for member in usersData:
-                print("Comparing: " + member.name + " to " + member.name)
-                if member.id == user.id:
+                print("Comparing: " + str(user.id) + " to " + str(usersData[member]["id"]))
+                if user.id == usersData[member]["id"]:
                     detected = True
                     break
             if (detected == True):
                 continue
             else:
-                usersData[user.id] = user
+                tempString = user.name + "#" + user.discriminator
+                usersData[tempString] = {
+                "id" : user.id,
+                "name" : user.name,
+                "discriminator" : user.discriminator,
+                "display_name" : user.display_name,
+                "bot" : user.bot,
+                "created_at" : str(user.created_at),
+                "color" : user.color.value,
+                "mention" : user.mention,
+                "avatar" : user.avatar
+                }
+                print("Added " + tempString + " to the list.")
         else:
-            usersData[user.id] = user
-            
+            tempString = user.name + "#" + user.discriminator
+            usersData[tempString] = {
+            "id" : user.id,
+            "name" : user.name,
+            "discriminator" : user.discriminator,
+            "display_name" : user.display_name,
+            "bot" : user.bot,
+            "created_at" : str(user.created_at),
+            "color" : user.color.value,
+            "mention" : user.mention,
+            "avatar" : user.avatar
+            }
+            print("Added " + tempString + " to the list.")
+            """
+            tempString = user.name + "#" + user.discriminator
+            usersData[tempString]["id"] = user.id
+            usersData[tempString]["name"] = user.name
+            usersData[tempString]["discriminator"] = user.discriminator
+            usersData[tempString]["display_name"] = user.display_name
+            usersData[tempString]["bot"] = user.bot
+            usersData[tempString]["created_at"] = user.created_at
+            usersData[tempString]["color"] = user.color
+            usersData[tempString]["mention"] = user.mention
+            usersData[tempString]["avatar"] = user.avatar
+            """
+
     print("User list updated to:\n")
     for member in usersData:
-        print(str(member) + " = " + str(usersData[member].name) + " " + str(usersData[member].id))
+        print(str(member) + " = " + str(usersData[member]["name"]) + " " + str(usersData[member]["id"]))
 
     #Write all of the data into the database
     with open("users.json", "w") as usersDataFile:
