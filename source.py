@@ -108,16 +108,16 @@ async def customTest(ctx):
     usersData = {}
 
     #Check for a preexisting user database
-    print("users.json exists = " + str(path.exists("users.json")))
-    if path.exists('"users.json"'):
-        with open('"users.json"') as usersDataFile:
-            usersData = json.loads(usersDataFile.read())   
+    if path.exists("users.json"):
+        with open("users.json") as usersDataFile:
+            usersData = json.load(usersDataFile)
         print("Loaded users list:\n")
         for member in usersData:
             print(member)
     else:
         print("No user data detected.")
 
+    print("\n")
     #Check each scanned member against the pre-existing database
     for user in client.users:
         if usersData != None:
@@ -157,20 +157,8 @@ async def customTest(ctx):
             "avatar" : user.avatar
             }
             print("Added " + tempString + " to the list.")
-            """
-            tempString = user.name + "#" + user.discriminator
-            usersData[tempString]["id"] = user.id
-            usersData[tempString]["name"] = user.name
-            usersData[tempString]["discriminator"] = user.discriminator
-            usersData[tempString]["display_name"] = user.display_name
-            usersData[tempString]["bot"] = user.bot
-            usersData[tempString]["created_at"] = user.created_at
-            usersData[tempString]["color"] = user.color
-            usersData[tempString]["mention"] = user.mention
-            usersData[tempString]["avatar"] = user.avatar
-            """
 
-    print("User list updated to:\n")
+    print("\nUser list updated to:")
     for member in usersData:
         print(str(member) + " = " + str(usersData[member]["name"]) + " " + str(usersData[member]["id"]))
 
