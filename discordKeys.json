@@ -1,9 +1,0 @@
-{ 
-    "personalAssitant" : {
-    "botToken" : "ODI1NDU1NTM5Mzk5NTU3MTgx.YF-LYA.dfYIofb-fVLbcBMUb22CE3EU_LM",
-    "client-ID" : "825455539399557181",
-    "public-ID" : "9198975fb26be78918e25d31e4efdbf1e6f7d4defc83a9d2de191fbe92bd4f52",
-    "secret-ID" : "njZVJ-_3pkX6ycrKFB-H309bY-Seq7hs",
-    "redirect-URL" : "https://www.swtor.com/",
-    "redirect-URL2" : "https://discord.com/api/oauth2/authorize?client_id=825455539399557181&permissions=2385603904&scope=bot"
-}}
