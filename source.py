@@ -172,9 +172,8 @@ def initialize():
     if path.exists("discordKeys.json"):
         with open("discordKeys.json", "r") as discordFile:
             Keys = json.load(discordFile)
-            discordFile.close()
-            print("Attempting to connect using the token: " + Keys["personalAssitant"]["botToken"])
-            client.run(Keys["personalAssitant"]["botToken"])
+        print("Attempting to connect using the token: " + Keys["personalAssitant"]["botToken"])
+        client.run(Keys["personalAssitant"]["botToken"])
     else:
         print("No discord keys were detected.")
 
