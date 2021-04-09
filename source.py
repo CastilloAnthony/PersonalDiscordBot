@@ -26,7 +26,7 @@ async def on_member_join(ctx):
 async def on_message(ctx):
     if ctx.author == client.user:
         return
-    #if ctx.author.id == 234855562922295296:
+    #if ctx.author.id == 234855562922295296: # Life Swordsman's ID
         #print("Cool story dude.")
 
     await client.process_commands(ctx)
