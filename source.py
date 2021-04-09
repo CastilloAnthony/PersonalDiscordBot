@@ -7,23 +7,41 @@ import math
 from os import path
 from discord.ext import commands
 
-Keys = {}
-
 intents = discord.Intents().all()
 client = commands.Bot(command_prefix='!', intents=intents)
-#currentGuild = discord.Guild
 
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     print("Current Latency: " + str(round(client.latency, 3)) + " seconds")
-    #readFileJson("users.json", usersData)
-    #print(str(currentGuild))
+    return
+
+@client.event
+async def on_member_join(ctx):
+    #client.command.scan()
+    #await client.scan()
+    return
+
+@client.event
+async def on_message(ctx):
+    if ctx.author == client.user:
+        return
+    #if ctx.author.id == 234855562922295296:
+        #print("Cool story dude.")
+
+    await client.process_commands(ctx)
+    return
 
 @client.command()
 async def on_command_error(ctx, error):
 	if isinstance(error, commands.CommmandNotFound):
 		await ctx.send('Invalid command')
+
+#COMMAND: remindme, reminds the user on the day and time specified 
+@client.command()
+async def remindme(ctx, arg):
+    await ctx.send("I remind you on ")
+    return
 
 #COMMAND: ping, will respond with pong and display the current latency
 @client.command()
@@ -88,10 +106,32 @@ async def knight(ctx, arg):
     #set the user's role to Jedi Knight
     knightString = "By the will of the Force and the power granted to me, I Knight you young " + str(ctx.author) + " as a Jedi Knight! Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
     await ctx.send(knightString)
+    return
+
+@client.command()
+async def jedi(ctx, arg):
+    #set the user's role to Jedi
+    jediString = ""
+    await ctx.send(jediString)
+    return
+
+@client.command()
+async def padwan(ctx, arg):
+    #set the user's role to Jedi
+    padwanString = ""
+    await ctx.send(padwanString)
+    return
+
+@client.command()
+async def disciple(ctx, arg):
+    #set the user's role to Jedi
+    discipleString = ""
+    await ctx.send(discipleString)
+    return
 
 #COMMAND: collect data on detectable users.
 @client.command()
-async def scanForNew(ctx):
+async def scan(ctx):
     usersData = {}
     newUsers = 0
     print("Scannning for new users.")
@@ -111,7 +151,7 @@ async def scanForNew(ctx):
         if usersData != None:
             detected = False
             for member in usersData:
-                print("Comparing: " + str(user.id) + " to " + str(usersData[member]["id"]))
+                #print("Comparing: " + str(user.id) + " to " + str(usersData[member]["id"]))
                 if user.id == usersData[member]["id"]:
                     detected = True
                     print("The user " + user.name + "#" + user.discriminator + " is already registered.")
@@ -176,5 +216,6 @@ def initialize():
         client.run(Keys["personalAssitant"]["botToken"])
     else:
         print("No discord keys were detected.")
+    return
 
 initialize()
