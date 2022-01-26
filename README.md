@@ -1,2 +1,2 @@
 # PersonalDiscordBot
-A personalize discord bot.
+A personalized discord bot.
