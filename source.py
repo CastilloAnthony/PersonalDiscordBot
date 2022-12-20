@@ -3,12 +3,19 @@ import json
 import random
 import os
 import math
+import time
+import calendar
+import pathlib
+currentPath = pathlib.Path(__file__).parent.resolve() # Gets the python script file's current location
+os.chdir(currentPath) # Sets the working directory to the current file's location
 
 from os import path
 from discord.ext import commands
+from bagOfDice_Imp import BagOfDice
 
 intents = discord.Intents().all()
 client = commands.Bot(command_prefix='!', intents=intents)
+usersDice = {}
 
 @client.event
 async def on_ready():
@@ -32,7 +39,7 @@ async def on_message(ctx):
     await client.process_commands(ctx)
     return
 
-@client.command()
+@client.event
 async def on_command_error(ctx, error):
 	if isinstance(error, commands.CommmandNotFound):
 		await ctx.send('Invalid command')
@@ -40,40 +47,53 @@ async def on_command_error(ctx, error):
 #COMMAND: remindme, reminds the user on the day and time specified 
 @client.command()
 async def remindme(ctx, arg):
-    await ctx.send("I remind you on ")
+    """WIP: Sends a message to a user at the day and time requested"""
+    currentTime = time.gmtime(time.time())
+    #print(currentTime[6]) # Day of the week (0-6), where 0 is monday
+    await ctx.send("I will remind you on " + "Not Implemented")
+    return
+
+#COMMAND:
+@client.command()
+async def ctime(ctx):
+    """Says the current time in a human readable format"""
+    await ctx.send(str(time.ctime()))
     return
 
 #COMMAND: ping, will respond with pong and display the current latency
 @client.command()
 async def ping(ctx):
+    """Displays the latency of this bot's responses"""
     await ctx.send("Pong!" + " Current Latency: " + str(round(client.latency, 3)) + " seconds.")
     return
 
 #COMMAND: hello, will respond with 'world' 
 @client.command()
 async def hello(ctx):
-    """Send text message 'world'"""
+    """Sends text message 'world'"""
     await ctx.send("world")
     return
 
 #COMMAND: happy, will respond with the slight_smile emoji
 @client.command()
 async def happy(ctx):
-    """Send :slight_smile: Emoji"""
+    """Sends :slight_smile: Emoji"""
     await ctx.send(":slight_smile:")
     return
 
 #COMMAND: boomerang, will repeat the argument if an argument is sent by the user
 @client.command()
 async def boomerang(ctx, *, arg):
+    """Repeats what is said after the command"""
     if arg:
         await ctx.send(arg)
     return
 
+'''
 #COMMAND: dice, will send value found by random generation
 @client.command()
 async def dice(ctx, arg):
-    """Roll Dice(.dice help to see options"""
+    """Roll Dice (type \"!dice help\" to see options)"""
     dice_result=0
     if arg == "help":
         await ctx.send("!dice <dicetype>")
@@ -99,39 +119,173 @@ async def dice(ctx, arg):
         dice_result = random.randint(1,20)
     await ctx.send(dice_result)
     return
+'''
+
+#COMMAND:
+@client.command()
+async def dice(ctx, arg1 = None, arg2 = None, quantity = None):
+    '''Utilizes the dice framework. Use !dice help for more info. Use !dice 6, 8 to roll the d6 eight times.'''
+    if (str(ctx.author.id) in usersDice):
+        if (arg1 == 'roll'): # Roll a dice
+            if (arg2 != None):
+                if (quantity != None):
+                    message = str(usersDice[str(ctx.author.id)].rollDice(arg2, int(quantity)))
+                    await ctx.send(message)
+                    return
+                else:
+                    message = str(usersDice[str(ctx.author.id)].rollDice(arg2))
+                    await ctx.send(message)
+                    return
+            else:
+                message = str(usersDice[str(ctx.author.id)].rollDice())
+                await ctx.send(message)
+                return
+        elif (arg1 == 'add'): # Adds a dice to the user's bag
+            if (arg2 != None):
+                if (usersDice[str(ctx.author.id)].addDice(arg2)):
+                    message = 'Added ' + arg2 + ' to ' + str(ctx.author.id) + '\'s bag.'
+                    await ctx.send(message)
+                    return
+                else:
+                    message = 'Could not add ' + arg2 + ' to ' + str(ctx.author.id) + '\'s bag.'
+                    await ctx.send(message)
+                    return
+            else:
+                return
+        elif (arg1 == 'remove'): # Removes a dice from the user's bag
+            if (arg2 != None):
+                if (usersDice[str(ctx.author.id)].removeDice(arg2)):
+                    message = 'Removed ' + arg2 + ' from ' + str(ctx.author.id) + '\'s bag.'
+                    await ctx.send(message)
+                    return
+                else:
+                    message = 'Could not remove ' + arg2 + ' from ' + str(ctx.author.id) + '\'s bag.'
+                    await ctx.send(message)
+                    return
+            else:
+                return
+        elif (arg1 == 'previous'): # Returns the previous rolled dice's result
+            await ctx.send(str(usersDice[str(ctx.author.id)].getPrevious()))
+            return
+        elif (arg1 == 'history'): # Returns the history of all the dice that have been rolled from this bag
+            await ctx.send(str(usersDice[str(ctx.author.id)].getHistory()))
+            return
+        elif (arg1 == 'empty'): # Empties the user's bag
+            if (usersDice[str(ctx.author.id)].getHistory()):
+                message = str(ctx.author.display_name) + '\'s dice bag has been empied.'
+                await ctx.send(message)
+                return
+            else:
+                message = 'Could not empty ' + str(ctx.author.display_name) + '\'s bag.'
+                await ctx.send(message)
+                return
+        elif (arg1 == 'standardSet'): # Adds the standard DnD set of dice to the user's bag
+            usersDice[str(ctx.author.id)].standardDiceSet()
+            message = 'Added the standard DnD dice to ' + str(ctx.author.display_name) + '\'s bag.'
+            await ctx.send(message)
+            return
+        elif (arg1 == 'display'): # Displays the dice in the bag and their last rolls
+            message = str(ctx.author.display_name) +'\'s Bag: ' + str(usersDice[str(ctx.author.id)])
+            await ctx.send(message)
+            return
+        elif (arg1 == 'help'): # Displays a message of the commands
+            message = 'Utilization: !dice arg1, arg2, arg3 \narg1 can be one of the following commands: roll, add, remove, previous, history, empty, standardSet, display, or help \narg2 is be the number of faces for the dice you want to roll, add, or remove. \narg3 is the number of times you would like to roll your dice.'
+            await ctx.send(message)
+            return
+        else:
+            return # Do nothing, no viable command was given
+    else:
+        message = str(ctx.author.display_name) + ' has no dice. Use !giveDice to get a set of dice.'
+        await ctx.send(message)
+        return # Do nothing if the user doesn't have a bag of dice.
+
+#COMMAND: Gives a player a bag of dice
+@client.command()
+async def giveDice(ctx, name = None):
+    '''Gives a bag of dice to the specified user'''
+    message = ''
+    if (name != None):
+        for user in client.users:
+            if (name in user.display_name):
+                for i in usersDice:
+                    if i == str(user.id):
+                        message = str(name) + ' already has a bag of dice.'
+                        await ctx.send(message)
+                        return
+                newBag = BagOfDice()
+                newBag.standardDiceSet()
+                print('Assigning a bag of dice to ', user.id)
+                usersDice[str(user.id)] = newBag
+                message = str(name) + ' has a new bag of dice to play with.'
+                await ctx.send(message)
+                return
+        else:
+            message = 'Could not give the user ' + str(name) + ' a bag of dice.'
+            await ctx.send(message)
+            return
+    else:
+        if (str(ctx.author.id) in usersDice):
+            message = str(ctx.author.display_name) + ' already has dice.'
+            return
+        else:
+            newBag = BagOfDice()
+            newBag.standardDiceSet()
+            print('Assigning a bag of dice to ', ctx.author.id)
+            usersDice[str(ctx.author.id)] = newBag
+            message = str(ctx.author.display_name) + ' has a new bag of dice to play with.'
+            await ctx.send(message)
+            return
 
 #COMMAND: knight, will respond with a phrase and knight the user
 @client.command()
 async def knight(ctx, arg):
+    """WIP: Changes a user's Role to Jedi Knight"""
     #set the user's role to Jedi Knight
-    knightString = "By the will of the Force and the power granted to me, I Knight you young " + str(ctx.author) + " as a Jedi Knight! Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
-    await ctx.send(knightString)
+    #print(ctx.author.roles)
+    #print(ctx.message.guild.roles)
+    print(discord.role)
+    for role in ctx.message.guild.roles:
+        authority = ''
+        print(role)
+        if "Admin" in role:
+            authority = role
+        print(authority)
+        if authority in ctx.author.roles:
+            knightString = "By the will of the Force and the power vested in me, I Knight you young " + str(ctx.author) + " as a Jedi Knight! Now arise as a new child of the light. You will be the shield that guards innocents against those who would wish to cause harm."
+            await ctx.send(knightString)
     return
 
+#COMMAND: changes a user's role to jedi
 @client.command()
 async def jedi(ctx, arg):
+    """WIP: Changes a user's role to Jedi"""
     #set the user's role to Jedi
-    jediString = ""
+    jediString = "With the powers vested in me, I grant you the ranke of Padwan, " + arg
     await ctx.send(jediString)
     return
 
+#COMMAND: changes a user's role to padwan
 @client.command()
 async def padwan(ctx, arg):
+    """WIP: Changes a user's role to Padwan"""
     #set the user's role to Jedi
-    padwanString = ""
+    padwanString = "With the powers vested in me, I grant you the ranke of Padwan, " + arg
     await ctx.send(padwanString)
     return
 
+#COMMAND: changes a user's role to disciple
 @client.command()
 async def disciple(ctx, arg):
+    """WIP: Changes a user's role to disciple"""
     #set the user's role to Jedi
-    discipleString = ""
+    discipleString = "With the powers vested in me, I grant you the rank of disciple, " + arg
     await ctx.send(discipleString)
     return
 
 #COMMAND: collect data on detectable users.
 @client.command()
 async def scan(ctx):
+    """Initiates a scan of all the users in the server"""
     usersData = {}
     newUsers = 0
     print("Scannning for new users.")
@@ -210,6 +364,7 @@ async def scan(ctx):
 #This function will initialize our bot
 def initialize():
     if path.exists("discordKeys.json"):
+        print('testing initialize')
         with open("discordKeys.json", "r") as discordFile:
             Keys = json.load(discordFile)
         print("Attempting to connect using the token: " + Keys["personalAssitant"]["botToken"])
