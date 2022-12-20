@@ -53,7 +53,7 @@ async def remindme(ctx, arg):
     await ctx.send("I will remind you on " + "Not Implemented")
     return
 
-#COMMAND:
+#COMMAND: ctime, will display the current time in a human readable format
 @client.command()
 async def ctime(ctx):
     """Says the current time in a human readable format"""
@@ -121,10 +121,10 @@ async def dice(ctx, arg):
     return
 '''
 
-#COMMAND:
+#COMMAND: dice, utilizes the dice framework, use !dice help for more info
 @client.command()
 async def dice(ctx, arg1 = None, arg2 = None, quantity = None):
-    '''Utilizes the dice framework. Use !dice help for more info. Use !dice 6, 8 to roll the d6 eight times.'''
+    '''Utilizes the dice framework. Use !dice help for more info.'''
     if (str(ctx.author.id) in usersDice):
         if (arg1 == 'roll'): # Roll a dice
             if (arg2 != None):
@@ -189,7 +189,7 @@ async def dice(ctx, arg1 = None, arg2 = None, quantity = None):
             await ctx.send(message)
             return
         elif (arg1 == 'help'): # Displays a message of the commands
-            message = 'Utilization: !dice arg1, arg2, arg3 \narg1 can be one of the following commands: roll, add, remove, previous, history, empty, standardSet, display, or help \narg2 is be the number of faces for the dice you want to roll, add, or remove. \narg3 is the number of times you would like to roll your dice.'
+            message = 'Utilization: !dice arg1, arg2, arg3 \narg1 can be one of the following commands: roll, add, remove, previous, history, empty, standardSet, display, or help \narg2 is be the number of faces for the dice you want to roll, add, or remove. \narg3 is the number of times you would like to roll your dice. \ni.e., !dice roll 6 4 will roll a d6 4 times.'
             await ctx.send(message)
             return
         else:
