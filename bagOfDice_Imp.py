@@ -241,15 +241,16 @@ class LinkedList_Dice(LinkedListAbstract):
 
     def remove(self, name):
         current = self.__head
-        while (current.getValue().getName() != name):
-            if (current == None):
-                return False
+        previous = current
+        while (current != None):
+            if (current.getValue().getName() == name):
+                previous.setNext(current.getNext())
+                del current
+                return True
             else:
                 previous = current
                 current = current.getNext()
-        previous.setNext(current.getNext())
-        del current
-        return True
+        return False
 
     def clear(self):
         while (self.__head != None):
