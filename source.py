@@ -23,6 +23,7 @@ async def on_ready():
     print('Logged in as {0.user} with nickname {0.user.display_name}'.format(client))
     if client.user.name != 'personalassitant':
         await client.user.edit(username='personalassitant')
+        print('Changed user name to '+'personalassitant')
     for guild in client.guilds:
         guilds[guild.id] = guild.name
         bot = guild.get_member(client.user.id)
