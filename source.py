@@ -1,4 +1,4 @@
-﻿﻿import discord
+﻿import discord
 import json
 import random
 import os
@@ -21,9 +21,10 @@ usersDice = {}
 @client.event
 async def on_ready():
     print('Logged in as {0.user} with nickname {0.user.display_name}'.format(client))
-    if client.user.name != 'personalassitant':
+    if client.user.name == 'servertest':
         await client.user.edit(username='personalassitant')
-        print('Changed user name to '+'personalassitant')
+        await client.change_presence(status=discord.Status.online, activity=discord.Game(name='Project Zomboid | !pz'))
+        print('Changed user name to '+'personalassitant'+' and set activity to '+'Project Zomboid | !pz')
     for guild in client.guilds:
         guilds[guild.id] = guild.name
         bot = guild.get_member(client.user.id)
@@ -31,7 +32,7 @@ async def on_ready():
             await bot.edit(nick='Personal Assitant')
     print('Currently associated with these guilds: ', guilds)
     print("Current Latency: " + str(round(client.latency, 3)) + " seconds")
-    await client.change_presence(status=discord.Status.online, activity=discord.Game(name='Project Zomboid | !pz'))
+    
     # await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing, name='Project Zomboid'))
     return
 
@@ -414,45 +415,38 @@ async def projectZomboid(ctx, arg1 = None):
     if (arg1 == None):
         message = 'For a list of commands use \'!pz help\''
         await ctx.send(message)
-        return
     elif (arg1 == 'game'):
         gameLink = 'https://projectzomboid.com/blog/'
         message = 'Here is a link to Project Zomboid\'s website: ' + gameLink
         await ctx.send(message)
-        return
     elif (arg1 == 'mods'):
         packLink = 'https://steamcommunity.com/sharedfiles/filedetails/?id=2893925662'
         message = 'Here is a link to the current modpack: ' + packLink
         await ctx.send(message)
-        return
     elif (arg1 == 'map'):
         mapLink = 'https://map.projectzomboid.com/'
         message = 'Here is a link to the online vanilla map: ' + mapLink
         await ctx.send(message)
-        return
     elif (arg1 == 'serverIp' or arg1 == 'ip'):
         ipAddress = '76.20.82.68'
         port = '16261'
         message = 'Here is the IP address of the server: ' + ipAddress + ' and the port is ' + port
         await ctx.send(message)
-        return
     elif (arg1 == 'news'):
         newsLink = 'https://projectzomboid.com/blog/news/'
         message = 'Here is a link to Vanilla Game News: ' + newsLink
         await ctx.send(message)
-        return
     elif (arg1 == 'help'):
         message = 'Available Commands: mods, map, serverIP, ip, news'
         await ctx.send(message)
-        return
-    else:
-        return
+    return
     
 #COMMAND: change a user's nick name
 @client.command(pass_context=True)
 async def chnick(ctx, member: discord.Member, nick):
     await member.edit(nick=nick)
     await ctx.send(f'Nickname was changed for {member.mention} ')
+    return
 
 #This function will initialize our bot
 def initialize():
