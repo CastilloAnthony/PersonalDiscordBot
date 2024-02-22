@@ -23,13 +23,13 @@ async def on_ready():
     print('Logged in as {0.user} with nickname {0.user.display_name}'.format(client))
     if client.user.name == 'servertest':
         await client.user.edit(username='personalassitant')
-        await client.change_presence(status=discord.Status.online, activity=discord.Game(name='Project Zomboid | !pz'))
         print('Changed user name to '+'personalassitant'+' and set activity to '+'Project Zomboid | !pz')
     for guild in client.guilds:
         guilds[guild.id] = guild.name
         bot = guild.get_member(client.user.id)
         if bot != None:
             await bot.edit(nick='Personal Assitant')
+    await client.change_presence(status=discord.Status.online, activity=discord.Game(name='Project Zomboid | !pz'))
     print('Currently associated with these guilds: ', guilds)
     print("Current Latency: " + str(round(client.latency, 3)) + " seconds")
     
